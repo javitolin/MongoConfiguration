@@ -1,0 +1,10 @@
+﻿{
+  "MongoSettings": {
+    "ConnectionString": "mongodb+srv://test_user:test_user@cluster0.sn9q9.azure.mongodb.net/test",
+    "DatabaseName": "configuration_db",
+    "CollectionName": "configuration_collection",
+    "KeyName": "MyKey",
+    "KeyValue": "mykeyvalue"
+  },
+  "MyNumbers": [1, 2, 3]
+}

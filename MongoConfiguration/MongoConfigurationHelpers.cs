@@ -4,9 +4,9 @@ namespace MongoConfiguration
 {
     public static class MongoConfigurationHelpers
     {
-        public static T DeserializeObject<T>(string serializedObject)
+        public static T DeserializeMongoObject<T>(this string configurationValue)
         {
-            return BsonSerializer.Deserialize<T>(serializedObject);
+            return BsonSerializer.Deserialize<T>(configurationValue);
         }
     }
 }

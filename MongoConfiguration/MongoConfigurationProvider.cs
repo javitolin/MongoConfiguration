@@ -7,29 +7,32 @@ namespace MongoConfiguration
     public class MongoConfigurationProvider : ConfigurationProvider
     {
         private readonly IMongoCollection<BsonDocument> _mongoCollection;
-        private readonly string _keyName;
-        private string _keyValue;
+        private readonly MongoSettings _mongoSettings;
 
-        public MongoConfigurationProvider(IMongoCollection<BsonDocument> mongoCollection, string keyName, string keyValue)
+        public MongoConfigurationProvider(IMongoCollection<BsonDocument> mongoCollection,
+            MongoSettings mongoSettings)
         {
             _mongoCollection = mongoCollection;
-            _keyName = keyName;
-            _keyValue = keyValue;
+            _mongoSettings = mongoSettings;
         }
 
         public override void Load()
         {
-            var item = _mongoCollection.Find(Builders<BsonDocument>.Filter.Eq(_keyName, _keyValue)).FirstOrDefault();
+            var item = _mongoCollection.Find(Builders<BsonDocument>.Filter.Eq(_mongoSettings.KeyName, _mongoSettings.KeyValue)).FirstOrDefault();
             if (item == null)
                 return;
 
-            if (Data.ContainsKey(_keyValue))
+            var itemDictionary = item.ToDictionary();
+            foreach (var (key, value) in itemDictionary)
             {
-                Data[_keyValue] = item.ToJson();
-                return;
-            }
+                if (Data.ContainsKey(key))
+                {
+                    Data[key] = value.ToJson();
+                    continue;
+                }
 
-            Data.Add(_keyValue, item.ToJson());
+                Data.Add(key, value.ToJson());
+            }
         }
     }
 }

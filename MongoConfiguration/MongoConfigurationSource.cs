@@ -7,19 +7,18 @@ namespace MongoConfiguration
     public class MongoConfigurationSource : IConfigurationSource
     {
         private readonly IMongoCollection<BsonDocument> _mongoCollection;
-        private readonly string _keyName;
-        private readonly string _keyValue;
+        private readonly MongoSettings _mongoSettings;
 
-        public MongoConfigurationSource(IMongoCollection<BsonDocument> mongoCollection, string keyName, string keyValue)
+        public MongoConfigurationSource(IMongoCollection<BsonDocument> mongoCollection, 
+            MongoSettings mongoSettings)
         {
             _mongoCollection = mongoCollection;
-            _keyName = keyName;
-            _keyValue = keyValue;
+            _mongoSettings = mongoSettings;
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new MongoConfigurationProvider(_mongoCollection, _keyName, _keyValue);
+            return new MongoConfigurationProvider(_mongoCollection, _mongoSettings);
         }
     }
 }

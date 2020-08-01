@@ -1,25 +1,28 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoConfiguration;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using Xunit;
 
 namespace MongoConfigurationTester
 {
-    public class TestApp
+    public class TestBase
     {
-        private readonly IConfiguration _configuration;
+        IConfigurationBuilder _builder;
 
-        public TestApp(IConfiguration configuration)
+        public TestBase()
         {
-            _configuration = configuration;
+            var builder = new ConfigurationBuilder()
+               .AddMongoProvider("mongodb+srv://test_user:test_user@cluster0.sn9q9.azure.mongodb.net/test", "configuration_db",
+                   "configuration_collection", "MyKey", "mykeyvalue");
+
+            _builder = builder;
         }
 
-        public void Run()
+        [Fact]
+        public void GetKey_MyNumbers_ReturnsListOfNumbers()
         {
-            var a = 1;
-            var configuration = MongoConfigurationHelpers.DeserializeObject<MyConfiguration>(_configuration["mykeyvalue"]);
+            var numbers = _builder.Build()["MyNumbers"].DeserializeMongoObject<List<int>>();
+            Assert.Equal(5, numbers.Count);
         }
     }
 }
