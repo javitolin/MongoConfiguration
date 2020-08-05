@@ -1,6 +1,6 @@
 ﻿namespace MongoConfiguration
 {
-    public class MongoSettings
+    public class MongoConfigurationSettings
     {
         /// <summary>
         /// The connection string to use to connect to the MongoDB server

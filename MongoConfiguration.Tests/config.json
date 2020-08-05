@@ -1,10 +1,20 @@
 ﻿{
-  "MongoSettings": {
+  "MongoConfigurationSettings": {
     "ConnectionString": "mongodb+srv://test_user:test_user@cluster0.sn9q9.azure.mongodb.net/test",
     "DatabaseName": "configuration_db",
     "CollectionName": "configuration_collection",
     "KeyName": "MyKey",
     "KeyValue": "mykeyvalue"
   },
-  "MyNumbers": [1, 2, 3]
+  "MyNumbers": [ 12232, 2, 3 ],
+  "SomeObject": {
+    "one": "one",
+    "other": "otherValue",
+    "InternalKey": "JsonInternal"
+  },
+  "SomeComplexObject": {
+    "InternalObject": {
+      "InternalInternalString": "JsonText"
+    }
+  }
 }

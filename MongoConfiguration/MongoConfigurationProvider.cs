@@ -6,33 +6,23 @@ namespace MongoConfiguration
 {
     public class MongoConfigurationProvider : ConfigurationProvider
     {
-        private readonly IMongoCollection<BsonDocument> _mongoCollection;
-        private readonly MongoSettings _mongoSettings;
+        public MongoConfigurationSource MongoConfigurationSource { get; }
 
-        public MongoConfigurationProvider(IMongoCollection<BsonDocument> mongoCollection,
-            MongoSettings mongoSettings)
+        public MongoConfigurationProvider(MongoConfigurationSource mongoConfigurationSource)
         {
-            _mongoCollection = mongoCollection;
-            _mongoSettings = mongoSettings;
+            MongoConfigurationSource = mongoConfigurationSource;
         }
 
         public override void Load()
         {
-            var item = _mongoCollection.Find(Builders<BsonDocument>.Filter.Eq(_mongoSettings.KeyName, _mongoSettings.KeyValue)).FirstOrDefault();
+            var item = MongoConfigurationSource.MongoCollection
+                .Find(Builders<BsonDocument>.Filter.Eq(MongoConfigurationSource.MongoConfigurationSettings.KeyName,
+                    MongoConfigurationSource.MongoConfigurationSettings.KeyValue)).FirstOrDefault();
+
             if (item == null)
                 return;
 
-            var itemDictionary = item.ToDictionary();
-            foreach (var (key, value) in itemDictionary)
-            {
-                if (Data.ContainsKey(key))
-                {
-                    Data[key] = value.ToJson();
-                    continue;
-                }
-
-                Data.Add(key, value.ToJson());
-            }
+            Data = MongoDocumentParser.Parse(item);
         }
     }
 }

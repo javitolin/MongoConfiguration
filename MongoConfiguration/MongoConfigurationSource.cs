@@ -6,19 +6,27 @@ namespace MongoConfiguration
 {
     public class MongoConfigurationSource : IConfigurationSource
     {
-        private readonly IMongoCollection<BsonDocument> _mongoCollection;
-        private readonly MongoSettings _mongoSettings;
+        public IMongoCollection<BsonDocument> MongoCollection { get; }
+        public MongoConfigurationSettings MongoConfigurationSettings { get; }
 
         public MongoConfigurationSource(IMongoCollection<BsonDocument> mongoCollection, 
-            MongoSettings mongoSettings)
+            MongoConfigurationSettings mongoConfigurationSettings)
         {
-            _mongoCollection = mongoCollection;
-            _mongoSettings = mongoSettings;
+            MongoCollection = mongoCollection;
+            MongoConfigurationSettings = mongoConfigurationSettings;
+        }
+
+        public MongoConfigurationSource(MongoConfigurationSettings mongoConfigurationSettings)
+        {
+            MongoConfigurationSettings = mongoConfigurationSettings;
+            IMongoClient mongoClient = new MongoClient(mongoConfigurationSettings.ConnectionString);
+            IMongoDatabase database = mongoClient.GetDatabase(mongoConfigurationSettings.DatabaseName);
+            MongoCollection = database.GetCollection<BsonDocument>(mongoConfigurationSettings.CollectionName);
         }
 
         public IConfigurationProvider Build(IConfigurationBuilder builder)
         {
-            return new MongoConfigurationProvider(_mongoCollection, _mongoSettings);
+            return new MongoConfigurationProvider(this);
         }
     }
 }

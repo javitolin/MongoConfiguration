@@ -11,7 +11,7 @@ namespace MongoConfiguration.Tests
         [Fact]
         public void GetConfiguration_MyNumbers_ReturnsListOfNumbers()
         {
-            MongoSettings mongoSettings = new MongoSettings
+            MongoConfigurationSettings mongoConfigurationSettings = new MongoConfigurationSettings
             {
                 ConnectionString = "mongodb+srv://test_user:test_user@cluster0.sn9q9.azure.mongodb.net/test",
                 DatabaseName = "configuration_db",
@@ -21,9 +21,10 @@ namespace MongoConfiguration.Tests
             };
 
             var builder = new ConfigurationBuilder()
-                .AddMongoProvider(mongoSettings);
+                .AddMongoProvider(mongoConfigurationSettings);
 
-            var numbers = builder.Build()["MyNumbers"].DeserializeMongoObject<List<int>>();
+            List<int> numbers = new List<int>();
+            builder.Build().GetSection("MyNumbers").Bind(numbers);
             Assert.Equal(5, numbers.Count);
         }
 
@@ -35,38 +36,80 @@ namespace MongoConfiguration.Tests
                 .AddJsonFile("config.json");
             var conf = builder.Build();
 
-            MongoSettings settings = new MongoSettings();
-            conf.GetSection("MongoSettings").Bind(settings);
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
 
             builder = new ConfigurationBuilder()
-                .AddConfiguration(conf)
-                .AddMongoProvider(settings);
+                .AddMongoProvider(configurationSettings);
 
             conf = builder.Build();
 
-            var numbers = conf["MyNumbers"].DeserializeMongoObject<List<int>>();
+            List<int> numbers = new List<int>();
+            conf.GetSection("MyNumbers").Bind(numbers);
             Assert.Equal(5, numbers.Count);
+            Assert.Equal(1, numbers[0]);
         }
 
         [Fact]
         public void GetConfiguration_SettingsFromJsonOverride_ReturnsListOfNumbersFromJson()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("config.json");
+            var conf = builder.Build();
+
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
+
+            builder = new ConfigurationBuilder()
+                .AddMongoProvider(configurationSettings)
+                .AddJsonFile("config.json");
+
+            conf = builder.Build();
+
+            List<int> numbers = new List<int>();
+            conf.GetSection("MyNumbers").Bind(numbers);
+            Assert.Equal(5, numbers.Count);
+            Assert.Equal(12232, numbers[0]);
+        }
+
+        [Fact]
+        public void GetConfiguration_SettingsFromJson_ReturnsSomeObject()
         {
 
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("config.json");
             var conf = builder.Build();
 
-            MongoSettings settings = new MongoSettings();
-            conf.GetSection("MongoSettings").Bind(settings);
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
 
             builder = new ConfigurationBuilder()
-                //.AddMongoProvider(settings)
-                .AddConfiguration(conf);
+                .AddMongoProvider(configurationSettings);
 
             conf = builder.Build();
+            var customObject = conf.GetSection("SomeObject");
+            Assert.Equal("InternalValue", customObject["InternalKey"]);
+        }
 
-            var numbers = conf["MyNumbers"].DeserializeMongoObject<List<int>>();
-            Assert.Equal(3, numbers.Count);
+        [Fact]
+        public void GetConfiguration_SettingsFromJsonOverride_ReturnsNewSomeObject()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("config.json");
+            var conf = builder.Build();
+
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
+
+            builder = new ConfigurationBuilder()
+                .AddMongoProvider(configurationSettings)
+                .AddJsonFile("config.json");
+
+            conf = builder.Build();
+            var customObject = conf.GetSection("SomeObject");
+            Assert.Equal("one", customObject["one"]);
+            Assert.Equal("otherValue", customObject["other"]);
+            Assert.Equal("JsonInternal", customObject["InternalKey"]);
         }
     }
 }
