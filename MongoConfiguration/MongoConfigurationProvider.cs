@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -20,7 +21,15 @@ namespace MongoConfiguration
                     MongoConfigurationSource.MongoConfigurationSettings.KeyValue)).FirstOrDefault();
 
             if (item == null)
-                return;
+            {
+                if (MongoConfigurationSource.Optional)
+                    return;
+
+                throw new ArgumentException(
+                    $"[{MongoConfigurationSource.MongoConfigurationSettings.KeyName}] not found " +
+                    $"in database [{MongoConfigurationSource.MongoConfigurationSettings.ConnectionString}] under [{MongoConfigurationSource.MongoConfigurationSettings.DatabaseName}.{MongoConfigurationSource.MongoConfigurationSettings.CollectionName}] " +
+                    $"under key [{MongoConfigurationSource.MongoConfigurationSettings.KeyName}]");
+            }
 
             Data = MongoDocumentParser.Parse(item);
         }

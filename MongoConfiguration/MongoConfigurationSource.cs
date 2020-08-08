@@ -8,17 +8,12 @@ namespace MongoConfiguration
     {
         public IMongoCollection<BsonDocument> MongoCollection { get; }
         public MongoConfigurationSettings MongoConfigurationSettings { get; }
+        public bool Optional { get; set; }
 
-        public MongoConfigurationSource(IMongoCollection<BsonDocument> mongoCollection, 
-            MongoConfigurationSettings mongoConfigurationSettings)
-        {
-            MongoCollection = mongoCollection;
-            MongoConfigurationSettings = mongoConfigurationSettings;
-        }
-
-        public MongoConfigurationSource(MongoConfigurationSettings mongoConfigurationSettings)
+        public MongoConfigurationSource(MongoConfigurationSettings mongoConfigurationSettings, bool optional)
         {
             MongoConfigurationSettings = mongoConfigurationSettings;
+            Optional = optional;
             IMongoClient mongoClient = new MongoClient(mongoConfigurationSettings.ConnectionString);
             IMongoDatabase database = mongoClient.GetDatabase(mongoConfigurationSettings.DatabaseName);
             MongoCollection = database.GetCollection<BsonDocument>(mongoConfigurationSettings.CollectionName);

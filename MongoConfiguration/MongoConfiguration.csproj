@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1-Alpha</Version>
+    <Version>1.0</Version>
     <Authors>AsadoDevCulture</Authors>
     <Company />
     <Product />
     <Description>An IConfiguration implementation for receiving configuration from a MongoDB database</Description>
     <PackageProjectUrl>https://github.com/javitolin/MongoConfiguration</PackageProjectUrl>
     <RepositoryUrl>https://github.com/javitolin/MongoConfiguration</RepositoryUrl>
-    <PackageReleaseNotes>First vesion</PackageReleaseNotes>
+    <PackageReleaseNotes>Fully working mongodb configuration provider</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 

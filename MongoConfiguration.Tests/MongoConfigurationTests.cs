@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -110,6 +111,85 @@ namespace MongoConfiguration.Tests
             Assert.Equal("one", customObject["one"]);
             Assert.Equal("otherValue", customObject["other"]);
             Assert.Equal("JsonInternal", customObject["InternalKey"]);
+        }
+
+        [Fact]
+        public void GetConfiguration_BindFromBsonElement_ReturnsBsonConfiguredClass()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("config.json");
+            var conf = builder.Build();
+
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
+
+            builder = new ConfigurationBuilder()
+                .AddMongoProvider(configurationSettings);
+
+            conf = builder.Build();
+            var bsonObjectSection = conf.GetSection("BsonObject");
+            var bsonConfiguredClass = bsonObjectSection.BindFromBsonElement<BsonConfiguredClass>();
+            Assert.Equal("someName", bsonConfiguredClass.StudentName);
+            Assert.Equal(12, bsonConfiguredClass.StudentAge);
+            Assert.Collection(bsonConfiguredClass.StudentGrades, 
+                grade => Assert.Equal(80, grade),
+                grade => Assert.Equal(100, grade));
+
+            Assert.Collection(bsonConfiguredClass.LessonsDaysDictionary,
+                keyValue =>
+                {
+                    Assert.Equal("History", keyValue.Key);
+                    Assert.Equal("Monday", keyValue.Value);
+                },
+                keyValue =>
+                {
+                    Assert.Equal("Mathematics", keyValue.Key);
+                    Assert.Equal("Thursday", keyValue.Value);
+                },
+                keyValue =>
+                {
+                    Assert.Equal("Physics", keyValue.Key);
+                    Assert.Equal("Friday", keyValue.Value);
+                });
+        }
+
+        [Fact]
+        public void GetConfiguration_NotOptionalNotFound_ThrowsException()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("config.json");
+            var conf = builder.Build();
+
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
+
+            configurationSettings.KeyValue = "not a real key value";
+
+            builder = new ConfigurationBuilder()
+                .AddMongoProvider(configurationSettings, optional: false)
+                .AddJsonFile("config.json");
+
+            Assert.Throws<ArgumentException>(() => builder.Build());
+        }
+
+        [Fact]
+        public void GetConfiguration_IsOptionalNotFound_DoesntThrowException()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("config.json");
+            var conf = builder.Build();
+
+            MongoConfigurationSettings configurationSettings = new MongoConfigurationSettings();
+            conf.GetSection("MongoConfigurationSettings").Bind(configurationSettings);
+
+            configurationSettings.KeyValue = "not a real key value";
+
+            builder = new ConfigurationBuilder()
+                .AddMongoProvider(configurationSettings, optional: true)
+                .AddJsonFile("config.json");
+
+            conf = builder.Build();
+            Assert.NotNull(conf);
         }
     }
 }
