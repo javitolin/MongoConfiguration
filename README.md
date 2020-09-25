@@ -36,6 +36,8 @@ Install-Package MongoConfiguration -Version 1.0.0
 
 ## Meta
 
-AsadoDevCulture – [@jdorfsman](https://twitter.com/jdorfsman)
+[AsadoDevCulture](https://AsadoDevCulture.com) 
+
+[@jdorfsman](https://twitter.com/jdorfsman)
 
 Distributed under the MIT license.
