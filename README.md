@@ -5,7 +5,7 @@
 
 ## Installation
 ```
-Install-Package MongoConfiguration -Version 1.1.0
+Install-Package MongoConfiguration
 ```
 
 ## Usage example
