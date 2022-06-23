@@ -1,0 +1,30 @@
+{
+  "Database name": "configuration_db",
+  "Collection name": "configuration_collection",
+  "item": {
+    "MyKey": "mykeyvalue",
+    "SomeObject": {
+      "InternalKey": "InternalValue"
+    },
+    "MyNumbers": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "BsonObject": {
+      "first_name": "John Doe",
+      "age": 12,
+      "grades": [
+        80,
+        100
+      ],
+      "lessons": {
+        "History": "Monday",
+        "Mathematics": "Thursday",
+        "Physics": "Friday"
+      }
+    }
+  }
+}

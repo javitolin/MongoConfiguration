@@ -1,6 +1,6 @@
 ﻿{
   "MongoConfigurationSettings": {
-    "ConnectionString": "mongodb+srv://test_user:test_user@cluster0.sn9q9.azure.mongodb.net/test",
+    "ConnectionString": "mongodb+srv://test_user:test_user@weddingdbcluster.sxnda.mongodb.net",
     "DatabaseName": "configuration_db",
     "CollectionName": "configuration_collection",
     "KeyName": "MyKey",

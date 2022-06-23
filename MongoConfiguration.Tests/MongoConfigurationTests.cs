@@ -10,26 +10,6 @@ namespace MongoConfiguration.Tests
     public class MongoConfigurationTests
     {
         [Fact]
-        public void GetConfiguration_MyNumbers_ReturnsListOfNumbers()
-        {
-            MongoConfigurationSettings mongoConfigurationSettings = new MongoConfigurationSettings
-            {
-                ConnectionString = "mongodb+srv://test_user:test_user@cluster0.sn9q9.azure.mongodb.net/test",
-                DatabaseName = "configuration_db",
-                CollectionName = "configuration_collection",
-                KeyName = "MyKey",
-                KeyValue = "mykeyvalue"
-            };
-
-            var builder = new ConfigurationBuilder()
-                .AddMongoProvider(mongoConfigurationSettings);
-
-            List<int> numbers = new List<int>();
-            builder.Build().GetSection("MyNumbers").Bind(numbers);
-            Assert.Equal(5, numbers.Count);
-        }
-
-        [Fact]
         public void GetConfiguration_SettingsFromJson_ReturnsListOfNumbers()
         {
 
@@ -129,7 +109,7 @@ namespace MongoConfiguration.Tests
             conf = builder.Build();
             var bsonObjectSection = conf.GetSection("BsonObject");
             var bsonConfiguredClass = bsonObjectSection.BindFromBsonElement<BsonConfiguredClass>();
-            Assert.Equal("someName", bsonConfiguredClass.StudentName);
+            Assert.Equal("John Doe", bsonConfiguredClass.StudentName);
             Assert.Equal(12, bsonConfiguredClass.StudentAge);
             Assert.Collection(bsonConfiguredClass.StudentGrades, 
                 grade => Assert.Equal(80, grade),
