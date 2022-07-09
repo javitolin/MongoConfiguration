@@ -1,7 +1,7 @@
 # MongoConfiguration
 > An IConfiguration implementation for receiving configuration from a MongoDB database
 
-[![Build Status](https://dev.azure.com/asadodevculture/MongoConfiguration/_apis/build/status/MongoConfiguration-Build?branchName=master)](https://dev.azure.com/asadodevculture/MongoConfiguration/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/asadodevculture/AsadoDevCultureProjects/_apis/build/status/MongoConfiguration-Build?branchName=master)](https://dev.azure.com/asadodevculture/AsadoDevCultureProjects/_build/latest?definitionId=1&branchName=master)
 
 ## Installation
 ```
